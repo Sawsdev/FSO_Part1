@@ -4,7 +4,10 @@ const Button = ({handleClick, text }) => <button onClick={handleClick}>{text}</b
 const Header = ({text}) => <h1>{text}</h1>
 const Statistic = ({name, value}) => <p>{name}: {value}</p>
 const Statistics = ({good, bad, neutral, total, average, positive}) => {
-
+  if(total === 0)
+  {
+    return <p>No feedback given</p>
+  }
   return <div>
       <Statistic name="good" value={good} />
       <Statistic name="neutral" value={neutral} />
