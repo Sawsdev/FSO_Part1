@@ -1,5 +1,15 @@
 import { useState } from 'react'
 
+
+const Button = ({handleClick, text }) => <button onClick={handleClick}>{text}</button>
+const Anecdote = ({text, title} ) => {
+  return <div>
+    <h1>{title}</h1>  
+    <p>{text}</p>
+  </div>
+} 
+
+
 const App = () => {
   const anecdotes = [
     'If it hurts, do it more often.',
@@ -13,16 +23,39 @@ const App = () => {
   ]
    
   const [selected, setSelected] = useState(0)
-  const handleClick = () => {
+  const [votes, setVotes] = useState({
+    "0" : 0
+  })
+  
+  const getNextAnecdote = () => {
     const anecdoteIndex = Math.floor(8* Math.random())
+    const newVoteOption = {
+      ...votes
+    }
+    if (!Object.keys(votes).includes(`${anecdoteIndex}`)){
+      newVoteOption[`${anecdoteIndex}`] = 0
+      setVotes(newVoteOption)
+    }
     setSelected(anecdoteIndex)
+  }
+
+  const saveAnecdoteVote = () => {
+    
+      const updatedVote = votes[`${selected}`] + 1
+      const newVotes = {...votes}
+      newVotes[`${selected}`] = updatedVote
+      setVotes(newVotes)
+    
+   
   }
 
   return (
     <div>
-      {anecdotes[selected]}
-      <br />
-      <button onClick={handleClick}>Next anecdote</button>
+      <Anecdote text={anecdotes[selected]} title={"Anecdote of the day"} />
+      <p>has {votes[selected]} votes</p>
+      <Button handleClick={saveAnecdoteVote} text="vote"/>
+      <Button handleClick={getNextAnecdote} text="Next anecdote"/>
+    
     </div>
   )
 }
