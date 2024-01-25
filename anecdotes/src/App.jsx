@@ -7,7 +7,15 @@ const Anecdote = ({text, title} ) => {
     <h1>{title}</h1>  
     <p>{text}</p>
   </div>
-} 
+}
+
+const MostVotedAnecdote = ({text, title, votes}) => {
+  return <div>
+    <Anecdote text={text} title={title} />
+    <p>has {votes} votes</p>
+  </div>
+
+}
 
 
 const App = () => {
@@ -25,6 +33,10 @@ const App = () => {
   const [selected, setSelected] = useState(0)
   const [votes, setVotes] = useState({
     "0" : 0
+  })
+  const [mostVoted, setMostVoted] = useState({
+    "text": anecdotes[0],
+    "votes": 0
   })
   
   const getNextAnecdote = () => {
@@ -45,8 +57,23 @@ const App = () => {
       const newVotes = {...votes}
       newVotes[`${selected}`] = updatedVote
       setVotes(newVotes)
-    
+      getMostVotedAnecdote(newVotes)
    
+  }
+
+  const getMostVotedAnecdote = (votes) => {
+    const allVotes = Object.values(votes)
+    const allKeys = Object.keys(votes)
+    const maxVoted = Math.max(...allVotes)
+    const anecdoteIndex = allVotes.findIndex((element) => element === maxVoted)
+    const newMostVoted = {
+      "text": anecdotes[Number(allKeys[anecdoteIndex])],
+      "votes": maxVoted
+    }
+    if (maxVoted > 0) {
+      
+      setMostVoted(newMostVoted)
+    }
   }
 
   return (
@@ -55,7 +82,7 @@ const App = () => {
       <p>has {votes[selected]} votes</p>
       <Button handleClick={saveAnecdoteVote} text="vote"/>
       <Button handleClick={getNextAnecdote} text="Next anecdote"/>
-    
+      <MostVotedAnecdote text={mostVoted.text} votes={mostVoted.votes} title="Most Voted Anecdote" />
     </div>
   )
 }
